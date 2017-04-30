@@ -156,7 +156,7 @@
     };
 
     function onEachFeature(feature, layer){
-      var popupContent = "目前水情" + feature.properties.value;
+      var popupContent = "目前水情" + feature.properties.level;
 
       if (feature.properties && feature.properties.popupContent) {
         popupContent += feature.properties.popupContent;
