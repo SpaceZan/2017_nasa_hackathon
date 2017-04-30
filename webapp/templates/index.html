@@ -63,23 +63,106 @@
     }).addTo(mymap);
 
     var geojsonFeature = {
-        "type": "Feature",
-        "properties": {
-            "name": "Coors Field",
-            "amenity": "Baseball Stadium",
-            "popupContent": "This is where the Rockies play!",
-            "time": 1430391600
-        },
-        "geometry": {
-            "type": "Point",
-            "coordinates": [120.966175,23.844478]
-        }
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+                "value": 0.97,
+                "time": 1272588219000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [121.111426, 24.643887]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+                "value": 0.60,
+                "time": 1304124219000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.966175,23.844468]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+                "value": 0.3,
+                "time": 1335746619000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.735073,22.681274]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+                "value": 0.05,
+                "time": 1367282619000
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [120.295304,23.274761]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+                "value": 0.7,
+                "time": 1430354619000,
+                "style": {
+                    weight: 2,
+                    color: "#999",
+                    opacity: 1,
+                    fillColor: "blue",
+                    fillOpacity: 0.8
+                }
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [121.197957,23.156512]
+            }
+          },
+        ]
     };
 
-    var gpxTimeLayer = L.timeDimension.layer.geoJson(L.geoJson(geojsonFeature), {
+    function onEachFeature(feature, layer){
+      var popupContent = "目前水情" + feature.properties.value;
+
+      if (feature.properties && feature.properties.popupContent) {
+        popupContent += feature.properties.popupContent;
+      }
+
+      layer.bindPopup(popupContent);
+    }
+
+    var geojson = L.geoJson([geojsonFeature], {
+      style: function (feature) {
+        return feature.properties && feature.properties.style;
+      },
+      onEachFeature: onEachFeature,
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 8,
+          fillColor: "#ff7800",
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
+      }
+    })
+
+    var gpxTimeLayer = L.timeDimension.layer.geoJson(geojson, {
         updateTimeDimension: true,
-        addlastPoint: true,
-        waitForReady: true
+        updateTimeDimensionMode: 'replace',
+        addlastPoint: false,
+        waitForReady: true,
+        duration: 10,
     });
 
     gpxTimeLayer.addTo(mymap)
